@@ -1,0 +1,162 @@
+@use 'sass:map';
+
+$palette: (
+  'neutral': (
+    0:   oklch(1 0 0),
+    50:  oklch(0.985 0 0),
+    100: oklch(0.965 0 0),
+    200: oklch(0.925 0 0),
+    300: oklch(0.87 0 0),
+    400: oklch(0.78 0 0),
+    500: oklch(0.68 0 0),
+    600: oklch(0.55 0 0),
+    700: oklch(0.48 0 0),
+    800: oklch(0.40 0 0),
+    900: oklch(0.27 0 0),
+    950: oklch(0.18 0 0),
+  ),
+  'indigo': (
+    50:  oklch(0.985 0.007 275),
+    100: oklch(0.965 0.016 275),
+    200: oklch(0.925 0.036 275),
+    300: oklch(0.87 0.063 275),
+    400: oklch(0.78 0.111 275),
+    500: oklch(0.68 0.169 275),
+    600: oklch(0.55 0.2 275),
+    700: oklch(0.48 0.19 275),
+    800: oklch(0.40 0.17 275),
+    900: oklch(0.33 0.14 275),
+    950: oklch(0.26 0.11 275),
+  ),
+  'green': (
+    50:  oklch(0.985 0.022 150),
+    100: oklch(0.965 0.045 150),
+    200: oklch(0.925 0.075 150),
+    300: oklch(0.87 0.105 150),
+    400: oklch(0.78 0.135 150),
+    500: oklch(0.68 0.15 150),
+    600: oklch(0.55 0.15 150),
+    700: oklch(0.48 0.132 150),
+    800: oklch(0.40 0.11 150),
+    900: oklch(0.33 0.091 150),
+    950: oklch(0.26 0.072 150),
+  ),
+  'amber': (
+    50:  oklch(0.985 0.011 75),
+    100: oklch(0.965 0.028 75),
+    200: oklch(0.925 0.061 75),
+    300: oklch(0.87 0.105 75),
+    400: oklch(0.78 0.135 75),
+    500: oklch(0.68 0.143 75),
+    600: oklch(0.55 0.116 75),
+    700: oklch(0.48 0.101 75),
+    800: oklch(0.40 0.084 75),
+    900: oklch(0.33 0.069 75),
+    950: oklch(0.26 0.055 75),
+  ),
+  'red': (
+    50:  oklch(0.985 0.007 25),
+    100: oklch(0.965 0.017 25),
+    200: oklch(0.925 0.038 25),
+    300: oklch(0.87 0.069 25),
+    400: oklch(0.78 0.128 25),
+    500: oklch(0.68 0.19 25),
+    600: oklch(0.55 0.19 25),
+    700: oklch(0.48 0.18 25),
+    800: oklch(0.40 0.162 25),
+    900: oklch(0.33 0.133 25),
+    950: oklch(0.26 0.105 25),
+  ),
+  'blue': (
+    50:  oklch(0.985 0.007 245),
+    100: oklch(0.965 0.017 245),
+    200: oklch(0.925 0.038 245),
+    300: oklch(0.87 0.068 245),
+    400: oklch(0.78 0.12 245),
+    500: oklch(0.68 0.15 245),
+    600: oklch(0.55 0.138 245),
+    700: oklch(0.48 0.12 245),
+    800: oklch(0.40 0.1 245),
+    900: oklch(0.33 0.083 245),
+    950: oklch(0.26 0.065 245),
+  ),
+);
+
+$space: (
+  '0': 0,
+  'px': 1px,
+  '0-5': 0.125rem,  //  2px
+  '1': 0.25rem,     //  4px
+  '1-5': 0.375rem,  //  6px
+  '2': 0.5rem,      //  8px
+  '3': 0.75rem,     // 12px
+  '4': 1rem,        // 16px
+  '5': 1.25rem,     // 20px
+  '6': 1.5rem,      // 24px
+  '8': 2rem,        // 32px
+  '10': 2.5rem,     // 40px
+  '12': 3rem,       // 48px
+  '16': 4rem,       // 64px
+  '20': 5rem,       // 80px
+);
+
+$radius: (
+  'none': 0,
+  'xs': 0.125rem,  //  2px  checkbox, tag piccoli
+  'sm': 0.25rem,   //  4px  badge, chip
+  'md': 0.5rem,    //  8px  bottoni, input
+  'lg': 0.75rem,   // 12px  card, pannelli
+  'xl': 1rem,      // 16px  modali, dialog
+  'full': 9999px,  // pillole, avatar
+);
+
+$border-width: (
+  'none': 0,
+  'thin': 1px,
+  'thick': 2px,
+);
+
+$shadow: (
+  'none': 'none',
+  'xs': '0 1px 2px oklch(0 0 0 / 0.05)',
+  'sm': '0 1px 3px oklch(0 0 0 / 0.08), 0 1px 2px -1px oklch(0 0 0 / 0.06)',
+  'md': '0 4px 8px -2px oklch(0 0 0 / 0.08), 0 2px 4px -2px oklch(0 0 0 / 0.06)',
+  'lg': '0 12px 24px -4px oklch(0 0 0 / 0.10), 0 4px 8px -4px oklch(0 0 0 / 0.06)',
+  'xl': '0 24px 48px -12px oklch(0 0 0 / 0.18)',
+);
+
+$duration: (
+  'instant': 0ms,
+  'fast': 100ms,     // hover, cambi di colore
+  'normal': 200ms,   // apertura dropdown, tooltip
+  'slow': 300ms,     // modali, pannelli laterali
+);
+
+$easing: (
+  'standard': cubic-bezier(0.2, 0, 0, 1),     // movimenti nello schermo
+  'enter': cubic-bezier(0, 0, 0, 1),          // decelera: elementi che entrano
+  'exit': cubic-bezier(0.3, 0, 1, 1),         // accelera: elementi che escono
+);
+
+$tokens: ();
+
+@each $hue, $steps in $palette {
+  @each $step, $value in $steps {
+    $tokens: map.set($tokens, 'color-#{$hue}-#{$step}', $value);
+  }
+}
+
+@each $group-name, $group in (
+  'space': $space,
+  'radius': $radius,
+  'border-width': $border-width,
+  'shadow': $shadow,
+  'duration': $duration,
+  'easing': $easing,
+) {
+ @each $name, $value in $group {
+   $tokens: map.set($tokens, '#{$group-name}-#{$name}', $value);
+ }
+}
+
+@debug map.keys($tokens);
