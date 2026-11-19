@@ -1,0 +1,147 @@
+@use 'sass:map';
+@use '../config';
+@use 'primitives';
+
+$light-refs: (
+  //sfondi
+  'color-bg-canvas': 'neutral-50',            // sfondo pagina
+  'color-bg-surface': 'neutral-0',            // card, pannelli
+  'color-bg-surface-raised': 'neutral-0',     // dropdown, popover
+  'color-bg-subtle': 'neutral-100',           //righe alternate, aree secondarie
+  'color-bg-hover': 'neutral-100',            //hover
+  'color-bg-selected': 'indigo-50',           //riga o voce selezionata
+  'color-bg-inverse': 'neutral-900',          //tooltip
+
+  //Testo
+  'color-text-primary': 'neutral-900',
+  'color-text-secondary': 'neutral-600',
+  'color-text-disabled': 'neutral-400',
+  'color-text-inverse': 'neutral-0',
+  'color-text-link': 'indigo-600',
+  'color-text-link-hover': 'indigo-700',
+
+  // Bordi
+  'color-border-default': 'neutral-200',
+  'color-border-strong': 'neutral-300',     // input, bordi che devono vedersi
+  'color-border-focus': 'indigo-600',
+
+  // Azioni
+  'color-action-primary': 'indigo-600',
+  'color-action-primary-hover': 'indigo-700',
+  'color-action-primary-active': 'indigo-800',
+  'color-on-action-primary': 'neutral-0',
+  'color-action-danger': 'red-600',
+  'color-action-danger-hover': 'red-700',
+  'color-action-danger-active': 'red-800',
+  'color-on-action-danger': 'neutral-0',
+
+  // Stati: text/bg/border per badge e banner, solid/on-solid per elementi pieni
+  'color-status-success-text': 'green-700',
+  'color-status-success-bg': 'green-50',
+  'color-status-success-border': 'green-200',
+  'color-status-success-solid': 'green-600',
+  'color-status-success-on-solid': 'neutral-0',
+
+  'color-status-warning-text': 'amber-700',
+  'color-status-warning-bg': 'amber-50',
+  'color-status-warning-border': 'amber-200',
+  'color-status-warning-solid': 'amber-400',
+  'color-status-warning-on-solid': 'neutral-950',
+
+  'color-status-danger-text': 'red-700',
+  'color-status-danger-bg': 'red-50',
+  'color-status-danger-border': 'red-200',
+  'color-status-danger-solid': 'red-600',
+  'color-status-danger-on-solid': 'neutral-0',
+
+  'color-status-info-text': 'blue-700',
+  'color-status-info-bg': 'blue-50',
+  'color-status-info-border': 'blue-200',
+  'color-status-info-solid': 'blue-600',
+  'color-status-info-on-solid': 'neutral-0',
+);
+
+$dark-refs: (
+  'color-bg-canvas': 'neutral-950',
+  'color-bg-surface': 'neutral-950',
+  'color-bg-surface-raised': 'neutral-900',
+  'color-bg-subtle': 'neutral-900',
+  'color-bg-hover': 'neutral-900',
+  'color-bg-selected': 'indigo-950',
+  'color-bg-inverse': 'neutral-50',
+
+  'color-text-primary': 'neutral-50',
+  'color-text-secondary': 'neutral-400',
+  'color-text-disabled': 'neutral-600',
+  'color-text-inverse': 'neutral-950',
+  'color-text-link': 'indigo-300',
+  'color-text-link-hover': 'indigo-200',
+
+  'color-border-default': 'neutral-800',
+  'color-border-strong': 'neutral-700',
+  'color-border-focus': 'indigo-400',
+
+  'color-action-primary': 'indigo-400',
+  'color-action-primary-hover': 'indigo-300',
+  'color-action-primary-active': 'indigo-200',
+  'color-on-action-primary': 'neutral-950',
+  'color-action-danger': 'red-400',
+  'color-action-danger-hover': 'red-300',
+  'color-action-danger-active': 'red-200',
+  'color-on-action-danger': 'neutral-950',
+
+  'color-status-success-text': 'green-300',
+  'color-status-success-bg': 'green-950',
+  'color-status-success-border': 'green-800',
+  'color-status-success-solid': 'green-400',
+  'color-status-success-on-solid': 'neutral-950',
+
+  'color-status-warning-text': 'amber-300',
+  'color-status-warning-bg': 'amber-950',
+  'color-status-warning-border': 'amber-800',
+  'color-status-warning-solid': 'amber-400',
+  'color-status-warning-on-solid': 'neutral-950',
+
+  'color-status-danger-text': 'red-300',
+  'color-status-danger-bg': 'red-950',
+  'color-status-danger-border': 'red-800',
+  'color-status-danger-solid': 'red-400',
+  'color-status-danger-on-solid': 'neutral-950',
+
+  'color-status-info-text': 'blue-300',
+  'color-status-info-bg': 'blue-950',
+  'color-status-info-border': 'blue-800',
+  'color-status-info-solid': 'blue-400',
+  'color-status-info-on-solid': 'neutral-950',
+);
+
+
+// Contratto: i due temi devono definire esattamente gli stessi token
+@each $name in map.keys($light-refs) {
+  @if not map.has-key($dark-refs, $name) {
+    @error 'Il token "#{$name}" esiste nel tema chiaro ma manca nel tema scuro.';
+  }
+}
+@each $name in map.keys($dark-refs) {
+  @if not map.has-key($light-refs, $name) {
+    @error 'Il token "#{$name}" esiste nel tema scuro ma manca nel tema chiaro.';
+  }
+}
+
+// Risoluzione: 'indigo-600' → var(--rs-color-indigo-600), con verifica che esista
+@function -resolve($refs, $theme) {
+  $resolved: ();
+  @each $name, $ref in $refs {
+    @if not map.has-key(primitives.$tokens, 'color-#{$ref}') {
+      @error 'Il token "#{$name}" (tema #{$theme}) punta al colore inesistente "#{$ref}".';
+    }
+    $resolved: map.set($resolved, $name, var(--#{config.$prefix}-color-#{$ref}));
+  }
+  @return $resolved;
+}
+
+$light: -resolve($light-refs, 'chiaro');
+$dark: -resolve($dark-refs, 'scuro');
+
+
+@debug map.get($light, 'color-text-primary');
