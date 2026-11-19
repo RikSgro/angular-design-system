@@ -1,0 +1,137 @@
+@use 'sass:map';
+
+$font-family: (
+  'sans': "'Inter Variable', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
+  'mono': "ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace",
+);
+
+$font-size: (
+  'xs': 0.75rem,
+  'sm': 0.875rem,
+  'md': 1rem,
+  'lg': 1.25rem,
+  'xl': 1.5625rem,
+  '2xl': 1.9375rem,
+  '3xl': 2.4375rem,
+);
+
+$font-weight: (
+  'regular': 400,
+  'medium': 500,
+  'semibold': 600,
+  'bold': 700,
+);
+
+$line-height: (
+  'tight': 1.25,    // titoli
+  'snug': 1.375,    // label, testi brevi
+  'normal': 1.5,    // paragrafi
+);
+
+$letter-spacing: (
+  'tight': -0.011em, // titoli grandi
+  'normal': 0,
+);
+
+// --- Appiattimento: stesso schema dei primitivi ------------------------------
+
+$tokens: ();
+
+$groups: (
+  'font-family': $font-family,
+  'font-size': $font-size,
+  'font-weight': $font-weight,
+  'line-height': $line-height,
+  'letter-spacing': $letter-spacing,
+);
+
+@each $group-name, $group in $groups {
+  @each $name, $value in $group {
+    $tokens: map.set($tokens, '#{$group-name}-#{$name}', $value);
+  }
+}
+
+// --- Stili di testo: combinazioni con nome ----------------------------------
+// Chiave = proprietà CSS, valore = nome completo del token
+
+$text-styles: (
+  'display': (
+    'font-family': 'font-family-sans',
+    'font-size': 'font-size-3xl',
+    'font-weight': 'font-weight-semibold',
+    'line-height': 'line-height-tight',
+    'letter-spacing': 'letter-spacing-tight',
+  ),
+  'heading-1': (
+    'font-family': 'font-family-sans',
+    'font-size': 'font-size-2xl',
+    'font-weight': 'font-weight-semibold',
+    'line-height': 'line-height-tight',
+    'letter-spacing': 'letter-spacing-tight',
+  ),
+  'heading-2': (
+    'font-family': 'font-family-sans',
+    'font-size': 'font-size-xl',
+    'font-weight': 'font-weight-semibold',
+    'line-height': 'line-height-snug',
+    'letter-spacing': 'letter-spacing-tight',
+  ),
+  'heading-3': (
+    'font-family': 'font-family-sans',
+    'font-size': 'font-size-lg',
+    'font-weight': 'font-weight-semibold',
+    'line-height': 'line-height-snug',
+    'letter-spacing': 'letter-spacing-normal',
+  ),
+  'body': (
+    'font-family': 'font-family-sans',
+    'font-size': 'font-size-md',
+    'font-weight': 'font-weight-regular',
+    'line-height': 'line-height-normal',
+    'letter-spacing': 'letter-spacing-normal',
+  ),
+  'body-sm': (
+    'font-family': 'font-family-sans',
+    'font-size': 'font-size-sm',
+    'font-weight': 'font-weight-regular',
+    'line-height': 'line-height-normal',
+    'letter-spacing': 'letter-spacing-normal',
+  ),
+  'label': (
+    'font-family': 'font-family-sans',
+    'font-size': 'font-size-sm',
+    'font-weight': 'font-weight-medium',
+    'line-height': 'line-height-snug',
+    'letter-spacing': 'letter-spacing-normal',
+  ),
+  'caption': (
+    'font-family': 'font-family-sans',
+    'font-size': 'font-size-xs',
+    'font-weight': 'font-weight-regular',
+    'line-height': 'line-height-normal',
+    'letter-spacing': 'letter-spacing-normal',
+  ),
+  'code': (
+    'font-family': 'font-family-mono',
+    'font-size': 'font-size-sm',
+    'font-weight': 'font-weight-regular',
+    'line-height': 'line-height-normal',
+    'letter-spacing': 'letter-spacing-normal',
+  ),
+);
+
+// Contratto: ogni stile definisce tutte le proprietà e punta a token esistenti
+$-required: ('font-family', 'font-size', 'font-weight', 'line-height', 'letter-spacing');
+
+@each $style-name, $style in $text-styles {
+  @each $property in $-required {
+    @if not map.has-key($style, $property) {
+      @error 'Lo stile "#{$style-name}" non definisce "#{$property}".';
+    }
+  }
+  @each $property, $ref in $style {
+    @if not map.has-key($tokens, $ref) {
+      @error 'Lo stile "#{$style-name}" punta al token inesistente "#{$ref}".';
+    }
+  }
+}

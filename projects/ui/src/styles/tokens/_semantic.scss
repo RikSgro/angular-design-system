@@ -143,5 +143,3 @@ $dark-refs: (
 $light: -resolve($light-refs, 'chiaro');
 $dark: -resolve($dark-refs, 'scuro');
 
-
-@debug map.get($light, 'color-text-primary');
