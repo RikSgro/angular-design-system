@@ -1,0 +1,22 @@
+@use 'sass:map';
+@use '../functions' as fn;
+@use '../tokens/typography' as type;
+
+@mixin text($style) {
+  @if not map.has-key(type.$text-styles, $style) {
+    @error 'Stile di testo "#{$style}" inesistente. Disponibili: #{map.keys(type.$text-styles)}.';
+  }
+  @each $property, $ref in map.get(type.$text-styles, $style) {
+    #{$property}: fn.token($ref);
+  }
+}
+
+@mixin numeric {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+@mixin amount($style: body) {
+  @include text($style);
+  @include numeric;
+  white-space: nowrap;
+}

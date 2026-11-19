@@ -1,0 +1,29 @@
+@use 'config';
+@use 'tokens/primitives';
+@use 'tokens/typography';
+@use 'tokens/semantic';
+@use 'base/reset';
+
+@mixin -emit($tokens) {
+  @each $name, $value in $tokens {
+    --#{config.$prefix}-#{$name}: #{$value};
+  }
+}
+
+@mixin core($include-reset: true) {
+  :root {
+    @include -emit(primitives.$tokens);
+    @include -emit(typography.$tokens);
+    @include -emit(semantic.$light);
+    color-scheme: light;
+  }
+
+  [data-#{config.$prefix}-theme='dark'] {
+    @include -emit(semantic.$dark);
+    color-scheme: dark;
+  }
+
+  @if $include-reset {
+    @include reset.styles;
+  }
+}

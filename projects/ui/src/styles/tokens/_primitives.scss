@@ -158,5 +158,3 @@ $tokens: ();
    $tokens: map.set($tokens, '#{$group-name}-#{$name}', $value);
  }
 }
-
-@debug map.keys($tokens);

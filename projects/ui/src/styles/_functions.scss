@@ -1,0 +1,17 @@
+@use 'sass:map';
+@use 'config';
+@use 'tokens/primitives';
+@use 'tokens/typography';
+@use 'tokens/semantic';
+
+$-known: map.merge(
+    map.merge(primitives.$tokens, typography.$tokens),
+    semantic.$light
+);
+
+@function token($name) {
+  @if not map.has-key($-known, $name) {
+    @error 'Token "#{$name}" inesistente.';
+  }
+  @return var(--#{config.$prefix}-#{$name});
+}
