@@ -1,20 +1,40 @@
 import type { Preview } from '@storybook/angular-vite';
+import '@fontsource-variable/inter';
+import './storybook.scss';
+
 
 const preview: Preview = {
-  parameters: {
-    controls: {
-      matchers: {
-        color: /(background|color)$/i,
-        date: /Date$/i,
+  globalTypes: {
+    theme: {
+      description: 'Tema del design system',
+      toolbar: {
+        title: 'Tema',
+        icon: 'mirror',
+        items: [
+          { value: 'light', title: 'Chiaro', icon: 'sun' },
+          { value: 'dark', title: 'Scuro', icon: 'moon' },
+        ],
+        dynamicTitle: true,
       },
     },
-
-    a11y: {
-      // 'todo' - show a11y violations in the test UI only
-      // 'error' - fail CI on a11y violations
-      // 'off' - skip a11y checks entirely
-      test: 'todo',
+  },
+  initialGlobals: {
+    theme: 'light',
+  },
+  decorators: [
+    (storyFn, context) => {
+      const theme = context.globals['theme'];
+      if (theme === 'dark') {
+        document.documentElement.setAttribute('data-rs-theme', 'dark');
+      } else {
+        document.documentElement.removeAttribute('data-rs-theme');
+      }
+      return storyFn();
     },
+  ],
+  parameters: {
+    backgrounds: { disable: true },
+    // … i parameters che l'init ha già generato
   },
 };
 
