@@ -1,38 +1,12 @@
 import { Meta, StoryObj } from '@storybook/angular-vite';
+import { readTokens, Token } from '../../../.storybook/read-tokens';
 
 const PREFIX = '--rs-color'
 
-interface Token {
-  name: string;
-  declared: string;
-}
-
-/** Legge dal CSS caricato le custom properties dei colori dichiarate su :root. */
-function readColorTokens(): Token[] {
-  const tokens: Token[] = [];
-  for (const sheet of Array.from(document.styleSheets)) {
-    let rules: CSSRuleList;
-    try {
-      rules = sheet.cssRules;
-    } catch {
-      continue;
-    }
-    for (const rule of Array.from(rules)) {
-      if (rule instanceof CSSStyleRule && rule.selectorText == ':root') {
-        for (const name of Array.from(rule.style)) {
-          if (name.startsWith(PREFIX)) {
-            tokens.push({name, declared: rule.style.getPropertyValue(name).trim()})
-          }
-        }
-      }
-    }
-  }
-  return tokens;
-}
 
 function groupTokens(layer: 'primitive' | 'semantic') {
   const groups = new Map<string, Token[]>();
-  for (const token of readColorTokens()) {
+  for (const token of readTokens(PREFIX+'-')) {
     const isSemantic = token.declared.startsWith('var(');
     if ((layer === 'semantic') !== isSemantic) continue;
     const group = token.name.slice(PREFIX.length).split('-')[0];
