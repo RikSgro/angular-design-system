@@ -1,0 +1,87 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Guida/Personalizzare" />
+
+# Personalizzare
+
+La libreria fornisce due cose:
+
+- **decisioni**: gli stili di testo, già combinati (`rs.text()`, classi `rs-text-*`);
+- **materiali**: i token, per costruire ciò che non c'è (`rs.token()`, `var(--rs-*)`).
+
+Quando uno stile pronto non va bene, costruisci il tuo con i token:
+restando nella scala del design system, il risultato rimane coerente.
+
+## Strada 1 — Token in SCSS (consigliata)
+
+```scss
+@use '@riksgro/angular-design-system/styles' as rs;
+
+.titolo-pratica {
+  font-size: rs.token(font-size-xl);
+  font-weight: rs.token(font-weight-medium);
+  line-height: rs.token(line-height-snug);
+}
+```
+
+I nomi vengono **verificati in compilazione**: `rs.token(font-size-xxl)` blocca la build
+con un errore, invece di essere ignorato in silenzio dal browser.
+
+## Strada 2 — Custom properties in CSS
+
+Per progetti senza Sass, o in CSS normale:
+
+```css
+.titolo-pratica {
+  font-size: var(--rs-font-size-xl);
+  font-weight: var(--rs-font-weight-medium);
+}
+```
+
+Attenzione: qui un nome sbagliato **non** dà errori. Il browser ignora la proprietà.
+
+## Strada 3 — Partire da uno stile esistente
+
+Spesso la scelta migliore: erediti dimensione, interlinea e font, e cambi solo ciò che serve.
+
+```scss
+.titolo-pratica {
+  @include rs.text(heading-3);
+  font-weight: rs.token(font-weight-medium);
+}
+```
+
+## Personalizzare il brand di un'applicazione
+
+Per cambiare l'aspetto di un'intera applicazione, ridefinisci i **token semantici**,
+non i componenti:
+
+```scss
+@use '@riksgro/angular-design-system/styles' as rs;
+
+@include rs.core();
+
+:root {
+  --rs-color-action-primary: var(--rs-color-blue-600);
+  --rs-color-action-primary-hover: var(--rs-color-blue-700);
+  --rs-color-action-primary-active: var(--rs-color-blue-800);
+  --rs-color-text-link: var(--rs-color-blue-600);
+}
+```
+
+Tutti i componenti si aggiornano da soli. Ricordati di fare lo stesso
+per il tema scuro, dentro `[data-rs-theme='dark'] { … }`.
+
+Evita di ridefinire i **primitivi** (`--rs-color-indigo-600`): il nome non corrisponderebbe
+più al colore, e chi legge il codice verrebbe ingannato.
+
+## Elenco dei token
+
+Tutti i token disponibili sono in **Foundations**:
+*Colori*, *Dimensioni*, *Tipografia*.
+
+## Quando chiedere uno stile nuovo
+
+Se la stessa combinazione serve in più punti, probabilmente **manca uno stile di testo**
+(o un token). Invece di ricostruirla ogni volta, apri una issue sul repository:
+se viene accettata, diventa uno stile ufficiale, con la sua classe `rs-text-*`.

@@ -1,0 +1,112 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Guida/Usare gli stili" />
+
+# Usare gli stili
+
+La libreria espone un'API Sass e un insieme ridotto di classi CSS.
+Il semplice `@use` **non genera CSS**: il CSS globale viene emesso solo quando lo richiedi esplicitamente.
+
+## 1. Caricare il font
+
+La libreria usa **Inter** ma non distribuisce i file del font: li carica l'applicazione,
+in self-hosting, senza CDN esterne.
+
+```bash
+npm i @fontsource-variable/inter
+```
+
+```ts
+// main.ts
+import '@fontsource-variable/inter';
+```
+
+Se il font non è caricato, il testo usa automaticamente il font di sistema.
+
+## 2. Stili globali (una sola volta)
+
+Nel foglio di stile globale dell'applicazione (es. `src/styles.scss`):
+
+```scss
+@use '@riksgro/angular-design-system/styles' as rs;
+
+@include rs.core();       // token (custom properties) + reset
+@include rs.utilities();  // opzionale: classi rs-text-*, rs-numeric, rs-visually-hidden
+```
+
+| Mixin | Cosa emette | Obbligatorio |
+|---|---|---|
+| `rs.core()` | Tutte le custom properties `--rs-*`, il tema scuro, il reset | Sì |
+| `rs.core($include-reset: false)` | Come sopra, senza reset (se l'app ne ha già uno) | — |
+| `rs.utilities()` | Le classi di utilità | No |
+
+Includi `core()` **una sola volta**: richiamarlo più volte duplica il CSS.
+
+## 3. Negli stili di un componente
+
+```scss
+@use '@riksgro/angular-design-system/styles' as rs;
+
+.riepilogo {
+  padding: rs.token(space-4);
+  background: rs.token(color-bg-surface);
+  border-radius: rs.token(radius-lg);
+}
+
+.riepilogo__titolo {
+  @include rs.text(heading-3);
+}
+
+.riepilogo__importo {
+  @include rs.amount(heading-2);   // stile di testo + cifre tabulari + niente a capo
+}
+```
+
+| API | Uso |
+|---|---|
+| `rs.token(nome)` | Valore di un token. Un nome inesistente blocca la compilazione |
+| `@include rs.text(stile)` | Applica uno stile di testo |
+| `@include rs.numeric` | Cifre a larghezza fissa |
+| `@include rs.amount(stile)` | Stile di testo + cifre tabulari + `nowrap`, per gli importi |
+| `@include rs.visually-hidden` | Nasconde alla vista, resta leggibile dagli screen reader |
+
+Per i colori usa sempre i **token semantici** (`color-text-primary`, `color-bg-surface`…),
+mai i primitivi (`color-neutral-900`): sono i semantici a cambiare con il tema.
+
+## 4. Nei template, con le classi
+
+Se hai incluso `rs.utilities()`:
+
+```html
+<h1 class="rs-text-heading-1">Pratica #2041</h1>
+<p class="rs-text-heading-2 rs-numeric">€ 18.500,00</p>
+
+<button>
+  <svg aria-hidden="true">…</svg>
+  <span class="rs-visually-hidden">Elimina documento</span>
+</button>
+```
+
+| Classe | Effetto |
+|---|---|
+| `rs-text-display`, `rs-text-heading-1/2/3`, `rs-text-body`, `rs-text-body-sm`, `rs-text-label`, `rs-text-caption`, `rs-text-code` | Stili di testo (vedi *Foundations/Tipografia*) |
+| `rs-numeric` | Cifre tabulari, da combinare con uno stile di testo |
+| `rs-visually-hidden` | Testo solo per screen reader |
+
+Il tag HTML decide la **struttura** (`h1`, `h2`…), la classe decide l'**aspetto**.
+I titoli senza classe non hanno stile: è voluto.
+
+## 5. Tema scuro
+
+Aggiungi l'attributo all'elemento `<html>` (o a una sola parte della pagina):
+
+```html
+<html data-rs-theme="dark">
+```
+
+Senza attributo si usa il tema chiaro.
+
+## Non trovi quello che ti serve?
+
+La libreria non ha classi per singole proprietà (margini, colori, dimensioni del font…).
+Vedi **Guida/Personalizzare** per costruire i tuoi stili a partire dai token.
