@@ -1,0 +1,20 @@
+@use 'config';
+@use 'tokens/typography' as type;
+@use 'mixins/typography' as typo;
+@use 'mixins/a11y';
+
+@mixin utilities {
+  @each $name, $_ in type.$text-styles {
+    .#{config.$prefix}-text-#{$name} {
+      @include typo.text($name);
+    }
+  }
+
+  .#{config.$prefix}-numeric {
+    @include typo.numeric;
+  }
+
+  .#{config.$prefix}-visually-hidden:not(:focus):not(:active) {
+    @include a11y.visually-hidden;
+  }
+}

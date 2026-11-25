@@ -1,3 +1,5 @@
 @forward 'functions' show token;
 @forward 'core' show core;
+@forward "utilities";
 @forward 'mixins/typography' show text, numeric, amount;
+@forward 'mixins/a11y';
