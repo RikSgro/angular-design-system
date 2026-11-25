@@ -1,14 +1,5 @@
 @use '../src/styles' as rs;
-@use '../src/styles/tokens/typography' as type;
 
 @include rs.core();
+@include rs.utilities;
 
-@each $name, $_ in type.$text-styles {
-  .sb-text-#{$name} {
-    @include rs.text($name);
-  }
-}
-
-.sb-numeric {
-  @include rs.numeric;
-}

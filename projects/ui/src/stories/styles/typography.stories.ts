@@ -1,7 +1,7 @@
 import { Meta, StoryObj } from '@storybook/angular-vite';
 import { readClasses, readTokens } from '../../../.storybook/read-tokens';
 
-const PREFIX_TEXT = '.sb-text-';
+const PREFIX_TEXT = 'rs-text-';
 const PREFIX_FONT_SIZE = '--rs-font-size-';
 
 const meta: Meta = {
@@ -13,7 +13,7 @@ export default meta;
 export const StiliDiTesto: StoryObj = {
   name: 'Stili di testo',
   render: () => ({
-    props: {classes: readClasses(PREFIX_TEXT)},
+    props: {classes: readClasses('.'+PREFIX_TEXT)},
     template: `
       @for (cls of classes; track cls) {
         <div style="margin-block: var(--rs-space-5)">
