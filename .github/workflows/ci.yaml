@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main, develop]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Build e test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Installa le dipendenza
+        run: npm ci
+
+      - name: Installa il browser per i test delle storie
+        run: npx playwright install --with-deps chromium
+
+      - name: Verifica i messaggi di commit
+        if: github.event_name == 'pull_request'
+        run: npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
+
+      - name: Build della libreria
+        run: npm run build
+
+      - name: Test degli stili
+        run: npm run test:styles
+
+      - name: Test unitari
+        run: npm test
+
+      - name: Test delle storie
+        run: npm run test:stories
